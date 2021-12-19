@@ -16,6 +16,13 @@ import java.util.Random;
 
 public class MultithreadedService {
 
+  private class Task {
+    private Integer Id;
+		private Long burstTime;
+		private Long startTime;
+		private Long finishTime;
+  }
+
     // TODO: implement a nested public class titled Task here
     // which must have an integer ID and specified burst time (duration) in milliseconds,
     // see below
