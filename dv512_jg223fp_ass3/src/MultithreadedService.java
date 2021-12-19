@@ -73,7 +73,7 @@ public class MultithreadedService {
         // 2. Afterwards, print the list of tasks IDs for the tasks which were currently
         // executing when the simulation was finished/interrupted
         
-        System.out.println("Waiting tasks:")
+        System.out.println("Waiting tasks:");
         // 3. Finally, print the list of tasks IDs for the tasks which were waiting for execution,
         // but were never started as the simulation was finished/interrupted
 	}
@@ -85,7 +85,7 @@ public class MultithreadedService {
     // you are allowed to add those to the signature of this method
     public static void main(String args[]) {
 		// TODO: replace the seed value below with your birth date, e.g., "20001001"
-		final long rngSeed = 00000000;  
+		final long rngSeed = 19910126;  
 				
         // Do not modify the code below — instead, complete the implementation
         // of other methods!
