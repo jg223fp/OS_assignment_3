@@ -1,6 +1,8 @@
+import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /*
@@ -19,11 +21,37 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class MultithreadedService {
 
-  private class Task {
+  private class Task implements Runnable {
     private Integer Id;
 		private Long burstTime;
 		private Long startTime;
 		private Long finishTime;
+
+		private Task() {
+			this.Id = numOfTasks;
+			this.burstTime = rndBurstTime(); 	
+		}
+
+		public void setStartTime() {
+      this.startTime = System.currentTimeMillis() - simStartTime;
+		}
+
+		public void setFinishTime() {
+			this.finishTime = System.currentTimeMillis() - simStartTime;
+		}
+
+		@Override  
+    public void run() {
+       try {
+        setStartTime();
+        Thread.sleep(burstTime);
+        setFinishTime();
+      } catch (InterruptedException e) {
+        System.out.println("Error! Task has stopped due to an unexpected error.");
+        e.printStackTrace();
+      }
+		}	
+
   }
 
     // TODO: implement a nested public class titled Task here
@@ -36,6 +64,9 @@ public class MultithreadedService {
 
     // Random number generator that must be used for the simulation
 	Random rng;
+  Long simStartTime;
+	Long minBurstTimeMs;
+	Long maxBurstTimeMs;
 	private Integer numOfTasks = 0;
 
     // ... add further fields, methods, and even classes, if necessary
@@ -49,6 +80,11 @@ public class MultithreadedService {
 	public void reset() {
 		// TODO - remove any information from the previous simulation, if necessary
     }
+
+	public Long rndBurstTime() {
+		long bt = ThreadLocalRandom.current().nextLong(minBurstTimeMs, maxBurstTimeMs+1);  //generates long in given range
+		return bt;
+	}	
     
 
     // If the implementation requires your code to throw some exceptions, 
@@ -56,11 +92,30 @@ public class MultithreadedService {
     public void runNewSimulation(final long totalSimulationTimeMs,
         final int numThreads, final int numTasks,
         final long minBurstTimeMs, final long maxBurstTimeMs, final long sleepTimeMs) {
+
         reset();
+				// set up fields for multithreaded service
+				this.maxBurstTimeMs = maxBurstTimeMs;
+				this.minBurstTimeMs = minBurstTimeMs;
+
+				// create cpu
 				ExecutorService exS = Executors.newFixedThreadPool(numThreads);
 				ThreadPoolExecutor cpu = (ThreadPoolExecutor) exS;
+        
+        // set start time
+				this.simStartTime = System.currentTimeMillis();
 				
-				//newFixedThreadPool threadPool = new fixed
+				numOfTasks += 1;
+				Task test = new Task();
+				cpu.execute(test);
+        cpu.shutdown();
+
+			//	while(System.currentTimeMillis() - simStartTime < totalSimulationTimeMs) {
+					
+			//	}
+				
+
+
         // TODO:
         // 1. Run the simulation for the specified time, totalSimulationTimeMs
         // 2. While the simulation is running, use a fixed thread pool with numThreads
