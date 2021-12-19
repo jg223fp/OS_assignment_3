@@ -1,9 +1,14 @@
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /*
  * File:	MultithreadedService.java
@@ -46,6 +51,7 @@ public class MultithreadedService {
         setStartTime();
         Thread.sleep(burstTime);
         setFinishTime();
+        System.out.println(Id + " finished");
       } catch (InterruptedException e) {
         System.out.println("Error! Task has stopped due to an unexpected error.");
         e.printStackTrace();
@@ -78,7 +84,7 @@ public class MultithreadedService {
 
 
 	public void reset() {
-		// TODO - remove any information from the previous simulation, if necessary
+		this.numOfTasks = 0;
     }
 
 	public Long rndBurstTime() {
@@ -98,19 +104,36 @@ public class MultithreadedService {
 				this.maxBurstTimeMs = maxBurstTimeMs;
 				this.minBurstTimeMs = minBurstTimeMs;
 
+        
 				// create cpu
 				ExecutorService exS = Executors.newFixedThreadPool(numThreads);
 				ThreadPoolExecutor cpu = (ThreadPoolExecutor) exS;
+
         
+
+        //test    https://www.javamex.com/tutorials/threads/thread_pools_queues.shtml
+        //BlockingQueue<Runnable> q = new ArrayBlockingQueue<Runnable>(numTasks);
+        BlockingQueue<Runnable> q = new LinkedBlockingDeque<Runnable>();
+        ThreadPoolExecutor ex = new ThreadPoolExecutor(numThreads, numThreads, 1, TimeUnit.SECONDS, q);
+        
+        for (int i = 0; i < numTasks; i++) {
+          numOfTasks += 1;
+				  Task t = new Task();
+          ex.execute(t);  
+        }
+        
+        
+
         // set start time
 				this.simStartTime = System.currentTimeMillis();
 				
-				numOfTasks += 1;
-				Task test = new Task();
-				cpu.execute(test);
+				
+				//cpu.execute();
         cpu.shutdown();
+        ex.shutdown();
 
-			//	while(System.currentTimeMillis() - simStartTime < totalSimulationTimeMs) {
+
+				//while(System.currentTimeMillis() - simStartTime < totalSimulationTimeMs) {
 					
 			//	}
 				
