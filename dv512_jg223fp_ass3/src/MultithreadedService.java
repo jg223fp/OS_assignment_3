@@ -1,4 +1,7 @@
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /*
  * File:	MultithreadedService.java
@@ -33,6 +36,7 @@ public class MultithreadedService {
 
     // Random number generator that must be used for the simulation
 	Random rng;
+	private Integer numOfTasks = 0;
 
     // ... add further fields, methods, and even classes, if necessary
     
@@ -53,7 +57,10 @@ public class MultithreadedService {
         final int numThreads, final int numTasks,
         final long minBurstTimeMs, final long maxBurstTimeMs, final long sleepTimeMs) {
         reset();
-
+				ExecutorService exS = Executors.newFixedThreadPool(numThreads);
+				ThreadPoolExecutor cpu = (ThreadPoolExecutor) exS;
+				
+				//newFixedThreadPool threadPool = new fixed
         // TODO:
         // 1. Run the simulation for the specified time, totalSimulationTimeMs
         // 2. While the simulation is running, use a fixed thread pool with numThreads
