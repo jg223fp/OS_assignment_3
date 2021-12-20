@@ -33,7 +33,7 @@ public class MultithreadedService {
 		private Long finishTime;
 
 		private Task() {
-			this.Id = numOfTasks;
+			this.Id = taskCount;
 			this.burstTime = rndBurstTime(); 	
 		}
 
@@ -51,7 +51,7 @@ public class MultithreadedService {
         setStartTime();
         Thread.sleep(burstTime);
         setFinishTime();
-        System.out.println(Id + " finished");
+        System.out.println(Id + " finished. Bursttime: " + burstTime);
       } catch (InterruptedException e) {
         System.out.println("Error! Task has stopped due to an unexpected error.");
         e.printStackTrace();
@@ -73,7 +73,7 @@ public class MultithreadedService {
   Long simStartTime;
 	Long minBurstTimeMs;
 	Long maxBurstTimeMs;
-	private Integer numOfTasks = 0;
+	private Integer taskCount = 0;
 
     // ... add further fields, methods, and even classes, if necessary
     
@@ -84,7 +84,7 @@ public class MultithreadedService {
 
 
 	public void reset() {
-		this.numOfTasks = 0;
+		this.taskCount = 0;
     }
 
 	public Long rndBurstTime() {
@@ -106,32 +106,19 @@ public class MultithreadedService {
 
         
 				// create cpu
-				ExecutorService exS = Executors.newFixedThreadPool(numThreads);
-				ThreadPoolExecutor cpu = (ThreadPoolExecutor) exS;
-
-        
-
-        //test    https://www.javamex.com/tutorials/threads/thread_pools_queues.shtml
-        //BlockingQueue<Runnable> q = new ArrayBlockingQueue<Runnable>(numTasks);
-        BlockingQueue<Runnable> q = new LinkedBlockingDeque<Runnable>();
-        ThreadPoolExecutor ex = new ThreadPoolExecutor(numThreads, numThreads, 1, TimeUnit.SECONDS, q);
-        
-        for (int i = 0; i < numTasks; i++) {
-          numOfTasks += 1;
-				  Task t = new Task();
-          ex.execute(t);  
-        }
-        
-        
+				ExecutorService cpu = Executors.newFixedThreadPool(numThreads);
 
         // set start time
 				this.simStartTime = System.currentTimeMillis();
-				
-				
-				//cpu.execute();
-        cpu.shutdown();
-        ex.shutdown();
 
+        for (int i = 0; i < numTasks; i++) {
+          taskCount += 1;
+				  Task t = new Task();
+          cpu.submit(t);  
+        }
+           
+				
+        cpu.shutdown();
 
 				//while(System.currentTimeMillis() - simStartTime < totalSimulationTimeMs) {
 					
@@ -183,7 +170,7 @@ public class MultithreadedService {
         // of other methods!
         MultithreadedService service = new MultithreadedService(rngSeed);
         
-        final int numSimulations = 3;
+        final int numSimulations = 1;   /// SHOULD BE 4 !!!!!!!!!!!!!!!!!!!!
         final long totalSimulationTimeMs = 15*1000L; // 15 seconds
         
         final int numThreads = 4;
