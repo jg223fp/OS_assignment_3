@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -29,8 +32,8 @@ public class MultithreadedService {
   private class Task implements Runnable {
     private Integer Id;
 		private Long burstTime;
-		private Long startTime;
-		private Long finishTime;
+		private Long startTime = null;
+		private Long finishTime = null;
 
 		private Task() {
 			this.Id = taskCount;
@@ -111,18 +114,25 @@ public class MultithreadedService {
         // set start time
 				this.simStartTime = System.currentTimeMillis();
 
+        // add tasks
         for (int i = 0; i < numTasks; i++) {
           taskCount += 1;
-				  Task t = new Task();
+          Task t = new Task();
           cpu.submit(t);  
         }
-           
-				
-        cpu.shutdown();
 
-				//while(System.currentTimeMillis() - simStartTime < totalSimulationTimeMs) {
-					
-			//	}
+        // limit simulation time
+				while(System.currentTimeMillis() - simStartTime < totalSimulationTimeMs) {
+				}
+
+        // You are HERE! Try to cancel the simulation without crash.
+        Thread.currentThread().interrupt();
+        
+         try {
+          List<Runnable> unprocessed = cpu.shutdownNow();
+         } catch (Exception e) {
+           //TODO: handle exception
+         }
 				
 
 
@@ -170,7 +180,7 @@ public class MultithreadedService {
         // of other methods!
         MultithreadedService service = new MultithreadedService(rngSeed);
         
-        final int numSimulations = 1;   /// SHOULD BE 4 !!!!!!!!!!!!!!!!!!!!
+        final int numSimulations = 1;                        /// SHOULD BE 4 !!!!!!!!!!!!!!!!!!!!
         final long totalSimulationTimeMs = 15*1000L; // 15 seconds
         
         final int numThreads = 4;
