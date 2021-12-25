@@ -15,9 +15,9 @@ import java.util.concurrent.TimeUnit;
 
 /*
  * File:	MultithreadedService.java
- * Course: 	20HT - Operating Systems - 1DV512
- * Author: 	*State your name and LNU student ID here! (e.g., ab222cd)*
- * Date: 	December 2020
+ * Course: 	21HT - Operating Systems - 1DV512
+ * Author: 	jg223fp
+ * Date: 	December 2021
  */
 
 // TODO: put this source code file into a new Java package with meaningful name (e.g., dv512.YourStudentID)!
