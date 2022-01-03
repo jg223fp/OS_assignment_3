@@ -1,3 +1,5 @@
+import java.lang.Thread.State;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -20,14 +22,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MultithreadedService {
 
+
   private class Task implements Runnable {
+    
     private Integer Id;
 		private Long burstTime;
 		private Long startTime = null;
 		private Long finishTime = null;
-    private Boolean waiting = true;
-    private Boolean completed = false;
-    private Boolean interrupted = false;
 
 		private Task() {
 			this.Id = taskCount;
@@ -42,20 +43,20 @@ public class MultithreadedService {
 			this.finishTime = System.currentTimeMillis() - simStartTime;
 		}
 
+
 		@Override  
     public void run() {
        try {
-        waiting = false;
         setStartTime();
         Thread.sleep(burstTime);
         setFinishTime();
-        completed = true;
+        completed.add(this);
 
         System.out.println(Id + " finished. Bursttime: " + burstTime);
       } catch (InterruptedException e) {
-        interrupted = true;
         Thread.currentThread().interrupt();
-        System.out.println("Error!  " + Thread.currentThread().getName() +  ": Task was interrupted!");
+        interrupted.add(this);
+        System.out.println("Error!  " + Thread.currentThread().getName() +  ": Task " + Id + " was interrupted!");
       }
 		}	
 
@@ -75,6 +76,9 @@ public class MultithreadedService {
 	Long minBurstTimeMs;
 	Long maxBurstTimeMs;
 	private Integer taskCount = 0;
+  private List<Runnable> completed = new ArrayList<Runnable>();
+  private List<Runnable> interrupted = new ArrayList<Runnable>();
+  private List<Runnable> waiting = null;
 
     // ... add further fields, methods, and even classes, if necessary
     
@@ -123,9 +127,11 @@ public class MultithreadedService {
 				while(System.currentTimeMillis() - simStartTime < totalSimulationTimeMs) {
 				}
 
-        
-         try {
-          List<Runnable> unprocessed = cpu.shutdownNow();
+        // shutdown cpu and return list of unprocessed tasks
+        try {
+          this.waiting = cpu.shutdownNow();
+            
+          
          } catch (Exception e) {
            //TODO: handle exception
          }
@@ -153,6 +159,11 @@ public class MultithreadedService {
         System.out.println("Completed tasks:");
         // 1. For each *completed* task, print its ID, burst time (duration),
         // its start time (moment since the start of the simulation), and finish time
+        for (int i = 0; i < completed.size(); i++) {
+          Runnable r = completed.get(i);
+          System.out.println("rad 164. Försök printa id och allt från tasks");
+          System.out.println(r.toString());          
+        }
         
         System.out.println("Interrupted tasks:");
         // 2. Afterwards, print the list of tasks IDs for the tasks which were currently
