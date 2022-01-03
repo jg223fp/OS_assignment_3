@@ -1,14 +1,8 @@
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /*
  * File:	MultithreadedService.java
@@ -31,6 +25,9 @@ public class MultithreadedService {
 		private Long burstTime;
 		private Long startTime = null;
 		private Long finishTime = null;
+    private Boolean waiting = true;
+    private Boolean completed = false;
+    private Boolean interrupted = false;
 
 		private Task() {
 			this.Id = taskCount;
@@ -48,13 +45,17 @@ public class MultithreadedService {
 		@Override  
     public void run() {
        try {
+        waiting = false;
         setStartTime();
         Thread.sleep(burstTime);
         setFinishTime();
+        completed = true;
+
         System.out.println(Id + " finished. Bursttime: " + burstTime);
       } catch (InterruptedException e) {
-        System.out.println("Error! Task has stopped due to an unexpected error.");
-        e.printStackTrace();
+        interrupted = true;
+        Thread.currentThread().interrupt();
+        System.out.println("Error!  " + Thread.currentThread().getName() +  ": Task was interrupted!");
       }
 		}	
 
@@ -122,8 +123,6 @@ public class MultithreadedService {
 				while(System.currentTimeMillis() - simStartTime < totalSimulationTimeMs) {
 				}
 
-        // You are HERE! Try to cancel the simulation without crash.
-        Thread.currentThread().interrupt();
         
          try {
           List<Runnable> unprocessed = cpu.shutdownNow();
