@@ -103,6 +103,9 @@ public class MultithreadedService {
 
 	public void reset() {
 		this.taskCount = 0;
+    this.completed.clear();
+    this.interrupted.clear();
+    this.waiting.clear();
     }
 
 	public Long rndBurstTime() {
