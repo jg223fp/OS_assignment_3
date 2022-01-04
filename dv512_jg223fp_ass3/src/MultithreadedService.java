@@ -144,7 +144,7 @@ public class MultithreadedService {
         try {
           this.waiting = cpu.shutdownNow();  
          } catch (Exception e) {
-           //TODO: handle exception
+           System.out.println("Error! An unexpected error has acured");
          }
 				
 
@@ -168,18 +168,20 @@ public class MultithreadedService {
     public void printResults() {
       
         // TODO:
-        System.out.println("Completed tasks:");
+        
         // 1. For each *completed* task, print its ID, burst time (duration),
         // its start time (moment since the start of the simulation), and finish time
+        System.out.println("Completed tasks:");
         System.out.printf("%-10s %-25s %-25s %-25s", "ID: ", "Burst time(ms): ", "Start time(ms): ", "Finish time(ms): ");  
         for (int i = 0; i < completed.size(); i++) {
           Task t = completed.get(i);
           System.out.printf("%n   %-10d %-25d %-25d %-25d", t.getId(), t.getBurstTime(), t.getStartTime(), t.getFinishTime());          
         }
         
-        System.out.println("\nInterrupted tasks:");
+        
         // 2. Afterwards, print the list of tasks IDs for the tasks which were currently
         // executing when the simulation was finished/interrupted
+        System.out.println("\nInterrupted tasks:");
         System.out.printf("%-10s %-25s %-25s", "ID: ", "Burst time(ms): ", "Start time(ms): ");  
         for (int i = 0; i < interrupted.size(); i++) {
           Task t = interrupted.get(i);
@@ -187,6 +189,8 @@ public class MultithreadedService {
         }
         
         System.out.println("\nWaiting tasks:");
+        Runnable t = waiting.get(0);
+        System.out.println(t.toString());
         // 3. Finally, print the list of tasks IDs for the tasks which were waiting for execution,
         // but were never started as the simulation was finished/interrupted
 	}
