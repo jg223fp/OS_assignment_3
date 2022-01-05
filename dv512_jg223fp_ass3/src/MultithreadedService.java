@@ -69,7 +69,7 @@ public class MultithreadedService {
         completed.add(this);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        //System.out.println("Error!  " + Thread.currentThread().getName() +  ": Task " + Id + " was interrupted!");
+        System.out.println("Error!  " + Thread.currentThread().getName() +  ": Task " + Id + " was interrupted!");
       }
 		}	
 
@@ -91,7 +91,7 @@ public class MultithreadedService {
 	private Integer taskCount = 0;
   private List<Task> completed = new ArrayList<Task>();
   private List<Task> interrupted = new ArrayList<Task>();
-  private List<Runnable> waiting = null;
+  private List<Runnable> waiting = new ArrayList<Runnable>();
 
     // ... add further fields, methods, and even classes, if necessary
     
@@ -150,6 +150,9 @@ public class MultithreadedService {
            System.out.println("Error! An unexpected error has acured");
          }
 				
+        while (!cpu.isTerminated()) {
+          // testa detta och kanske ta bort att du lägger till interrupted
+        }
 
 
         // TODO:
