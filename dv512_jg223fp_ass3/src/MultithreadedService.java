@@ -5,6 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.xml.namespace.QName;
+
 /*
  * File:	MultithreadedService.java
  * Course: 	21HT - Operating Systems - 1DV512
@@ -61,15 +63,16 @@ public class MultithreadedService {
 		@Override  
     public void run() {
        try {
-        interrupted.add(this);
+        //interrupted.add(this);
         setStartTime();
         Thread.sleep(burstTime);
         setFinishTime();
-        interrupted.remove(this);
+        //interrupted.remove(this);
         completed.add(this);
       } catch (InterruptedException e) {
+        interrupted.add(this);
         Thread.currentThread().interrupt();
-        System.out.println("Error!  " + Thread.currentThread().getName() +  ": Task " + Id + " was interrupted!");
+        //System.out.println("Error!  " + Thread.currentThread().getName() +  ": Task " + Id + " was interrupted!");
       }
 		}	
 
@@ -136,7 +139,7 @@ public class MultithreadedService {
         for (int i = 0; i < numTasks; i++) {
           taskCount += 1;
           Task t = new Task();
-          cpu.submit(t);  
+          cpu.execute(t);  
         }
 
         // limit simulation time
@@ -151,7 +154,7 @@ public class MultithreadedService {
          }
 				
         while (!cpu.isTerminated()) {
-          // testa detta och kanske ta bort att du lägger till interrupted
+          // testa detta och kanske ta bort att du lägger till interrupted   
         }
 
 
@@ -194,11 +197,14 @@ public class MultithreadedService {
           System.out.printf("%n   %-10d %-25d %-25d", t.getId(), t.getBurstTime(), t.getStartTime());          
         }
         
-        System.out.println("\nWaiting tasks:");
-        Runnable t = waiting.get(0);
-        System.out.println(t.toString());
         // 3. Finally, print the list of tasks IDs for the tasks which were waiting for execution,
         // but were never started as the simulation was finished/interrupted
+        System.out.println("\nWaiting tasks:");
+        System.out.printf("%-10s %-25s", "ID: ", "Burst time(ms): ");  
+        for (int i = 0; i < waiting.size(); i++) {
+          Task t = (Task) waiting.get(i);
+          System.out.printf("%n   %-10d %-25d", t.getId(), t.getBurstTime());          
+        }
 	}
 
 
@@ -214,8 +220,8 @@ public class MultithreadedService {
         // of other methods!
         MultithreadedService service = new MultithreadedService(rngSeed);
         
-        final int numSimulations = 1;                        /// SHOULD BE 4 !!!!!!!!!!!!!!!!!!!!
-        final long totalSimulationTimeMs = 15*1000L; // 15 seconds
+        final int numSimulations = 4;                        /// SHOULD BE 4 !!!!!!!!!!!!!!!!!!!!
+        final long totalSimulationTimeMs = 15*1000L; // 15 seconds  SHOULD BE 15 !!!!!!!!!!!!!!!!
         
         final int numThreads = 4;
         final int numTasks = 30;
