@@ -5,8 +5,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
-import javax.xml.namespace.QName;
-
 /*
  * File:	MultithreadedService.java
  * Course: 	21HT - Operating Systems - 1DV512
@@ -23,7 +21,6 @@ import javax.xml.namespace.QName;
 
 public class MultithreadedService {
 
-
   private class Task implements Runnable {
     
     private Integer Id;
@@ -31,43 +28,65 @@ public class MultithreadedService {
 		private Long startTime = null;
 		private Long finishTime = null;
 
+    /**
+    * Creates an instance of a runnable task object.
+    */
 		private Task() {
 			this.Id = taskCount;
 			this.burstTime = rndBurstTime(); 	
 		}
 
+    /**
+    * Sets the start time for the task object.
+    */
 		public void setStartTime() {
       this.startTime = System.currentTimeMillis() - simStartTime;
 		}
 
+    /**
+    * Sets the finish time for the task object.
+    */
 		public void setFinishTime() {
 			this.finishTime = System.currentTimeMillis() - simStartTime;
 		}
 
+    /**
+    * Returns the tasks ID.
+    */
     public Integer getId() {
       return Id;
     }
 
+    /**
+    * Returns the tasks burst time.
+    */
     public Long getBurstTime() {
       return burstTime;
     }
     
+    /**
+    * Returns the finih time of the task.
+    */
     public Long getFinishTime() {
       return finishTime;
     }
     
+    /**
+    * Returns the start time of the task.
+    */
     public Long getStartTime() {
       return startTime;
     }
 
+    /**
+    * Runs the task. Sleeps the amount of burt time the task has.
+    */
 		@Override  
     public void run() {
        try {
-        //interrupted.add(this);
         setStartTime();
         Thread.sleep(burstTime);
         setFinishTime();
-        //interrupted.remove(this);
         completed.add(this);
       } catch (InterruptedException e) {
         interrupted.add(this);
@@ -98,19 +117,26 @@ public class MultithreadedService {
 
     // ... add further fields, methods, and even classes, if necessary
     
-
+  /**
+  * Generates a random number generator and puts it in the rng field.
+  */  
 	public MultithreadedService (long rngSeed) {
         this.rng = new Random(rngSeed);
     }
 
-
+  /**
+  * Resets simulation data from previous simulation.
+  */  
 	public void reset() {
 		this.taskCount = 0;
     this.completed.clear();
     this.interrupted.clear();
-    this.waiting.clear();
+    this.waiting.clear();  
     }
 
+  /**
+  * Generates a burst time in given span.
+  */  
 	public Long rndBurstTime() {
 		long bt = ThreadLocalRandom.current().nextLong(minBurstTimeMs, maxBurstTimeMs+1);  //generates long in given range
 		return bt;
@@ -128,7 +154,6 @@ public class MultithreadedService {
 				this.maxBurstTimeMs = maxBurstTimeMs;
 				this.minBurstTimeMs = minBurstTimeMs;
 
-        
 				// create cpu
 				ExecutorService cpu = Executors.newFixedThreadPool(numThreads);
 
@@ -150,11 +175,10 @@ public class MultithreadedService {
         try {
           this.waiting = cpu.shutdownNow();  
          } catch (Exception e) {
-           System.out.println("Error! An unexpected error has acured");
+           System.out.println("Error! An unexpected error has acured while shutting down cpu.");
          }
 				
-        while (!cpu.isTerminated()) {
-          // testa detta och kanske ta bort att du lägger till interrupted   
+        while (!cpu.isTerminated()) { //wait for all prtocesses to terminate.
         }
 
 
@@ -173,7 +197,9 @@ public class MultithreadedService {
 
     }
 
-
+    /**
+    * Print simulation results.
+    */
     public void printResults() {
       
         // TODO:
@@ -220,9 +246,8 @@ public class MultithreadedService {
         // of other methods!
         MultithreadedService service = new MultithreadedService(rngSeed);
         
-        final int numSimulations = 4;                        /// SHOULD BE 4 !!!!!!!!!!!!!!!!!!!!
-        final long totalSimulationTimeMs = 15*1000L; // 15 seconds  SHOULD BE 15 !!!!!!!!!!!!!!!!
-        
+        final int numSimulations = 4;                       
+        final long totalSimulationTimeMs = 15*1000L;     
         final int numThreads = 4;
         final int numTasks = 30;
         final long minBurstTimeMs = 1*1000L; // 1 second  
