@@ -181,7 +181,6 @@ public class MultithreadedService {
         while (!cpu.isTerminated()) { //wait for all prtocesses to terminate.
         }
 
-
         // TODO:
         // 1. Run the simulation for the specified time, totalSimulationTimeMs
         // 2. While the simulation is running, use a fixed thread pool with numThreads
@@ -233,9 +232,6 @@ public class MultithreadedService {
         }
 	}
 
-
-
-
     // If the implementation requires your code to throw some exceptions, 
     // you are allowed to add those to the signature of this method
     public static void main(String args[]) {
@@ -271,7 +267,7 @@ public class MultithreadedService {
         System.out.println("----------------------");
         System.out.println("Exiting...");
         
-        // If your program has not completed after the message printed above,
+        // If your program has not completed after  the message printed above,
         // it means that some threads are not properly stopped! -> this issue will affect the grade
     }
 }
