@@ -91,11 +91,12 @@ public class MultithreadedService {
     public void run() {
        try {
         setStartTime();
+        interrupted.add(this);
         Thread.sleep(burstTime);
         setFinishTime();
         completed.add(this);
+        interrupted.remove(this);
       } catch (InterruptedException e) {
-        interrupted.add(this);
         Thread.currentThread().interrupt();
         //System.out.println("Error!  " + Thread.currentThread().getName() +  ": Task " + Id + " was interrupted!");
       }
@@ -139,7 +140,6 @@ public class MultithreadedService {
 		long bt = ThreadLocalRandom.current().nextLong(minBurstTimeMs, maxBurstTimeMs+1);  //generates long in given range
 		return bt;
 	}	
-    
 
     // If the implementation requires your code to throw some exceptions, 
     // you are allowed to add those to the signature of this method
@@ -172,7 +172,7 @@ public class MultithreadedService {
         // shutdown cpu and return list of unprocessed tasks
         try {
           this.waiting = cpu.shutdownNow();  
-         } catch (Exception e) {
+         } catch (SecurityException e) {
            System.out.println("Error! An unexpected error has acured while shutting down cpu.");
          }
 				
