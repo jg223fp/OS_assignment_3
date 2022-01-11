@@ -1,3 +1,5 @@
+package MultiThread;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,8 +10,8 @@ import java.util.concurrent.ThreadLocalRandom;
 /*
  * File:	MultithreadedService.java
  * Course: 	21HT - Operating Systems - 1DV512
- * Author: 	jg223fp
- * Date: 	December 2021
+ * Author: 	jg223fp Johan
+ * Date: 	210106
  */
 
 // TODO: put this source code file into a new Java package with meaningful name (e.g., dv512.YourStudentID)!
@@ -21,6 +23,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MultithreadedService {
 
+    // TODO: implement a nested public class titled Task here
+    // which must have an integer ID and specified burst time (duration) in milliseconds,
+    // see below
+    // Add further fields and methods to it, if necessary
+    // As the task is being executed for the specified burst time, 
+    // it is expected to simply go to sleep every X milliseconds (specified below)
   private class Task implements Runnable {
     
     private Integer Id;
@@ -97,14 +105,6 @@ public class MultithreadedService {
 
   }
 
-    // TODO: implement a nested public class titled Task here
-    // which must have an integer ID and specified burst time (duration) in milliseconds,
-    // see below
-    // Add further fields and methods to it, if necessary
-    // As the task is being executed for the specified burst time, 
-    // it is expected to simply go to sleep every X milliseconds (specified below)
-
-
     // Random number generator that must be used for the simulation
 	Random rng;
   Long simStartTime;
@@ -178,7 +178,7 @@ public class MultithreadedService {
            System.out.println("Error! An unexpected error has acured while shutting down cpu.");
          }
 				
-        while (!cpu.isTerminated()) { //wait for all prtocesses to terminate.
+        while (!cpu.isTerminated()) { //wait for all processes to terminate.
         }
 
         // TODO:
@@ -211,7 +211,6 @@ public class MultithreadedService {
           Task t = completed.get(i);
           System.out.printf("%n   %-10d %-25d %-25d %-25d", t.getId(), t.getBurstTime(), t.getStartTime(), t.getFinishTime());          
         }
-        
         
         // 2. Afterwards, print the list of tasks IDs for the tasks which were currently
         // executing when the simulation was finished/interrupted
@@ -271,3 +270,4 @@ public class MultithreadedService {
         // it means that some threads are not properly stopped! -> this issue will affect the grade
     }
 }
+
