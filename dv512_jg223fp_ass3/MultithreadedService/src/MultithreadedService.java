@@ -137,7 +137,10 @@ public class MultithreadedService {
   * Generates a burst time in given span.
   */  
 	public Long rndBurstTime() {
-		long bt = ThreadLocalRandom.current().nextLong(minBurstTimeMs, maxBurstTimeMs+1);  //generates long in given range
+    int min = Math.toIntExact(minBurstTimeMs);
+    int max = Math.toIntExact(maxBurstTimeMs);
+		long bt = rng.nextInt((max - min) + 1) + min;
+    //long bt = ThreadLocalRandom.current().nextLong(minBurstTimeMs, maxBurstTimeMs+1);  //generates long in given range, found on stackoverflow
 		return bt;
 	}	
 
